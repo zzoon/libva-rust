@@ -1,0 +1,11 @@
+[package]
+name = "libva-rust"
+version = "0.0.1"
+authors = ["Hyunjun Ko <zzoon@igalia.com>"]
+
+[lib]
+name = "libva_rust"
+path = "src/lib.rs"
+
+[dependencies]
+libc = "0.2.18"

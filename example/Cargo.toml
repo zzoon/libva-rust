@@ -1,0 +1,19 @@
+[package]
+name = "libva-rust-example"
+version = "0.0.1"
+authors = ["Hyunjun Ko <zzoon@igalia.com>"]
+
+[[bin]]
+name = "example"
+path = "example.rs"
+
+[dependencies.libva-rust]
+path = ".."
+features = []
+
+[dependencies.x11]
+version = "2.3"
+features = ["xlib"]
+
+[features]
+default = []
