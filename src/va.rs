@@ -20,7 +20,7 @@ pub const VA_STATUS_SUCCESS: i32 = ffi::VA_STATUS_SUCCESS as i32;
 pub struct VADisplay {
     disp: ffi::VADisplay,
     min: c_int,
-    max: c_int,
+    maj: c_int,
     max_profiles: c_int,
 }
 
@@ -28,12 +28,12 @@ pub struct VADisplay {
 impl VADisplay {
     pub fn initialize(native_disp: *mut VANativeDisplay) -> Result<VADisplay, ()> {
         let mut min = 0;
-        let mut max = 0;
+        let mut maj = 0;
         let disp = va_get_display(native_disp);
 
-        match va_init(disp, &mut min, &mut max) {
+        match va_init(disp, &mut maj, &mut min) {
             VA_STATUS_SUCCESS => {
-                println!("Initialization sucess - max: {} min: {}", min, max);
+                println!("Initialization sucess - Version: {}.{}", maj, min);
             }
             _ => return Err(()),
         }
@@ -42,13 +42,13 @@ impl VADisplay {
         Ok(VADisplay {
             disp: disp,
             min: min,
-            max: max,
+            maj: maj,
             max_profiles: max_profiles,
         })
     }
 
     pub fn get_va_version(&self) -> (i32, i32) {
-        (self.max, self.min)
+        (self.maj, self.min)
     }
 
     pub fn get_max_profiles(&self) -> i32 {
@@ -464,8 +464,8 @@ impl VABuffer {
 
 
 
-pub fn va_init(disp: ffi::VADisplay, min: *mut c_int, max: *mut c_int) -> ffi::VAStatus {
-    unsafe { ffi::vaInitialize(disp, min, max) }
+pub fn va_init(disp: ffi::VADisplay, maj: *mut c_int, min: *mut c_int) -> ffi::VAStatus {
+    unsafe { ffi::vaInitialize(disp, maj, min) }
 }
 
 pub fn va_get_display(native_disp: *mut VANativeDisplay) -> ffi::VADisplay {
