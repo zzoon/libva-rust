@@ -1,0 +1,19 @@
+[package]
+name = "libva-rust-vainfo"
+version = "0.0.1"
+authors = ["Hyunjun Ko <zzoon@igalia.com>"]
+
+[[bin]]
+name = "vainfo"
+path = "vainfo.rs"
+
+[dependencies.libva-rust]
+path = ".."
+features = []
+
+[dependencies.x11]
+version = "2.3"
+features = ["xlib"]
+
+[features]
+default = []
