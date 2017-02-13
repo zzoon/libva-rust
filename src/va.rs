@@ -3,6 +3,7 @@
 
 use std::os::raw::{c_uint, c_int, c_void, c_short, c_ushort};
 use std::ptr;
+use std::ffi::CString;
 
 use ffi;
 use ffi_x11;
@@ -22,6 +23,8 @@ pub struct VADisplay {
     min: c_int,
     maj: c_int,
     max_profiles: c_int,
+    vendor_string: String,
+    profile_list: Vec<VAProfile>,
 }
 
 /* TODO: replace print message with debug message or ruturning new value */
@@ -39,12 +42,26 @@ impl VADisplay {
         }
 
         let max_profiles = va_max_num_profiles(disp);
+        let vendor_string = va_query_vendor_string(disp);
+        let profile_list = va_query_config_profiles(disp, max_profiles);
+
         Ok(VADisplay {
             disp: disp,
             min: min,
             maj: maj,
             max_profiles: max_profiles,
+            vendor_string: vendor_string,
+            profile_list: profile_list,
         })
+    }
+
+    pub fn get_profiles(&self) -> &Vec<VAProfile> {
+        &self.profile_list
+    }
+
+    pub fn get_entrypoints(&self, profile: VAProfile) -> Vec<VAEntrypoint> {
+        let max_entrypoints = va_max_num_entrypoints(self.disp);
+        va_query_config_entrypoints(self.disp, profile, max_entrypoints)
     }
 
     pub fn get_va_version(&self) -> (i32, i32) {
@@ -57,6 +74,10 @@ impl VADisplay {
 
     pub fn get_display(&self) -> ffi::VADisplay {
         self.disp
+    }
+
+    pub fn get_vendor_string(&self) -> &String {
+        &self.vendor_string
     }
 
     pub fn destroy(&self) {
@@ -480,6 +501,10 @@ pub fn va_max_num_profiles(disp: ffi::VADisplay) -> c_int {
     unsafe { ffi::vaMaxNumProfiles(disp) }
 }
 
+pub fn va_max_num_entrypoints(disp: ffi::VADisplay) -> c_int {
+    unsafe { ffi::vaMaxNumEntrypoints(disp) }
+}
+
 pub fn va_create_surfaces(disp: ffi::VADisplay,
                           width: c_uint,
                           height: c_uint,
@@ -534,11 +559,38 @@ pub fn va_get_config_attributes(disp: ffi::VADisplay,
     unsafe { ffi::vaGetConfigAttributes(disp, profile, entrypoint, attrib_list, attr_num) }
 }
 
-pub fn va_query_config_profiles(disp: ffi::VADisplay,
-                                profile_list: *mut VAProfile,
-                                profile_num: *mut c_int)
-                                -> ffi::VAStatus {
-    unsafe { ffi::vaQueryConfigProfiles(disp, profile_list, profile_num) }
+pub fn va_query_vendor_string(disp: ffi::VADisplay) -> String {
+    unsafe {
+        let str = ffi::vaQueryVendorString(disp) as *mut i8;
+        CString::into_string(CString::from_raw(str)).unwrap()
+    }
+}
+
+pub fn va_query_config_profiles(disp: ffi::VADisplay, max_len: c_int)
+                                -> Vec<VAProfile> {
+    let mut profile_num = 0;
+    let mut profiles: Vec<VAProfile> = Vec::with_capacity(max_len as usize);
+    let v_ptr = profiles.as_mut_ptr();
+
+    unsafe {
+        ffi::vaQueryConfigProfiles(disp, v_ptr, &mut profile_num);
+        let rebuilt = Vec::from_raw_parts(v_ptr, profile_num as usize, max_len as usize);
+        rebuilt
+    }
+
+}
+
+pub fn va_query_config_entrypoints(disp: ffi::VADisplay, profile: ffi::VAProfile, max_len: c_int)
+                                -> Vec<VAEntrypoint> {
+    let mut entry_num = 0;
+    let mut entries: Vec<VAEntrypoint> = Vec::with_capacity(max_len as usize);
+    let e_ptr = entries.as_mut_ptr();
+
+    unsafe {
+        ffi::vaQueryConfigEntrypoints(disp, profile, e_ptr, &mut entry_num);
+        let rebuilt = Vec::from_raw_parts(e_ptr, entry_num as usize, max_len as usize);
+        rebuilt
+    }
 }
 
 pub fn va_create_config(disp: ffi::VADisplay,
