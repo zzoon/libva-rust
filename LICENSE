@@ -1,11 +1,7 @@
-Copyright (c) 2016 est31 <MTest31@outlook.com> and contributors
+Copyright (c) 2017 zzoon <zzoon@igalia.com>
 
 Licensed under MIT or Apache License 2.0,
 at your option.
-
-The full list of contributors can be obtained by looking
-at the VCS log (originally, this crate was git versioned,
-there you can do "git shortlog -sn" for this task).
 
 MIT License
 -----------
