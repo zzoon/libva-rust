@@ -26,6 +26,7 @@ pub type VABufferType = ffi::VABufferType;
 
 pub const VA_STATUS_SUCCESS: i32 = ffi::VA_STATUS_SUCCESS as i32;
 
+#[derive(Debug)]
 pub struct VADisplay {
     disp: ffi::VADisplay,
     min: c_int,
@@ -100,10 +101,12 @@ impl VADisplay {
     }
 }
 
+#[derive(Debug)]
 pub struct VAImage {
     image: ffi::VAImage,
 }
 
+#[derive(Debug)]
 pub struct VAImageFormat {
     format: ffi::VAImageFormat,
 }
@@ -195,6 +198,7 @@ impl VAImage {
     }
 }
 
+#[derive(Debug)]
 pub struct VASurface {
     id: ffi::VASurfaceID,
     format: c_uint,
@@ -298,6 +302,7 @@ impl VASurface {
     }
 }
 
+#[derive(Debug)]
 pub struct VAConfig {
     id: ffi::VAConfigID,
     attr_list: *const ffi::VAConfigAttrib,
@@ -359,6 +364,7 @@ impl VAConfig {
     }
 }
 
+#[derive(Debug)]
 pub struct VAContext {
     id: ffi::VAContextID,
     width: c_int,
@@ -415,6 +421,7 @@ impl VAContext {
     }
 }
 
+#[derive(Debug)]
 pub struct VABuffer {
     id: ffi::VABufferID,
     size: c_uint,
