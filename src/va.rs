@@ -102,6 +102,19 @@ impl VADisplay {
     }
 }
 
+impl Drop for VADisplay {
+    fn drop(&mut self) {
+        match va_terminate(self.disp) {
+            VA_STATUS_SUCCESS => {
+                println!("destroy success!");
+            }
+            _ => {
+                println!("destroy fail!");
+            }
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct VAImage {
     image: ffi::VAImage,
