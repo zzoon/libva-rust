@@ -9,6 +9,7 @@
 /* Temporarily disable dead_code warning */
 #![allow(dead_code)]
 
+use libc;
 use std::os::raw::{c_uint, c_int, c_void, c_short, c_ushort};
 use std::ptr;
 use std::ffi::CString;
@@ -577,7 +578,7 @@ pub fn va_get_config_attributes(disp: ffi::VADisplay,
 pub fn va_query_vendor_string(disp: ffi::VADisplay) -> String {
     unsafe {
         let str = ffi::vaQueryVendorString(disp) as *mut i8;
-        CString::into_string(CString::from_raw(str)).unwrap()
+        CString::into_string(CString::from_raw(libc::strdup(str))).unwrap()
     }
 }
 
