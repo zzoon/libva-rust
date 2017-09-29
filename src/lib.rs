@@ -6,9 +6,12 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+extern crate x11;
 extern crate libc;
 
 pub mod ffi;
 pub mod ffi_x11;
 pub mod va;
+pub mod renderer;
+pub mod renderer_x11;
 
