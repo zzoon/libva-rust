@@ -30,6 +30,7 @@ pub const VA_STATUS_SUCCESS: i32 = ffi::VA_STATUS_SUCCESS as i32;
 #[derive(Debug)]
 pub struct VADisplay {
     disp: ffi::VADisplay,
+    native_disp: *const VANativeDisplay,
     min: c_int,
     maj: c_int,
     max_profiles: c_int,
@@ -57,6 +58,7 @@ impl VADisplay {
 
         Ok(VADisplay {
             disp: disp,
+            native_disp: native_disp,
             min: min,
             maj: maj,
             max_profiles: max_profiles,
@@ -84,6 +86,10 @@ impl VADisplay {
 
     pub fn get_display(&self) -> ffi::VADisplay {
         self.disp
+    }
+
+    pub fn get_native_display(&self) -> *const VANativeDisplay {
+        self.native_disp
     }
 
     pub fn get_vendor_string(&self) -> &String {
