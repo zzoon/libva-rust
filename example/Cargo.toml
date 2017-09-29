@@ -12,7 +12,7 @@ path = ".."
 features = []
 
 [dependencies.x11]
-version = "2.3"
+git = "https://github.com/Daggerbot/x11-rs.git"
 features = ["xlib"]
 
 [features]

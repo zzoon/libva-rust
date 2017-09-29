@@ -7,5 +7,9 @@ authors = ["Hyunjun Ko <zzoon@igalia.com>"]
 name = "libva_rust"
 path = "src/lib.rs"
 
-[dependencies]
-libc = "0.2.18"
+[dependencies.libc]
+git = "https://github.com/rust-lang/libc.git"
+
+[dependencies.x11]
+git = "https://github.com/Daggerbot/x11-rs.git"
+features = ["xlib"]
