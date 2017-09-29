@@ -35,7 +35,6 @@ pub struct VADisplay {
     maj: c_int,
     max_profiles: c_int,
     vendor_string: String,
-    profile_list: Vec<VAProfile>,
 }
 
 /* TODO: replace print message with debug message or ruturning new value */
@@ -54,7 +53,6 @@ impl VADisplay {
 
         let max_profiles = va_max_num_profiles(disp);
         let vendor_string = va_query_vendor_string(disp);
-        let profile_list = va_query_config_profiles(disp, max_profiles);
 
         Ok(VADisplay {
             disp: disp,
@@ -63,12 +61,11 @@ impl VADisplay {
             maj: maj,
             max_profiles: max_profiles,
             vendor_string: vendor_string,
-            profile_list: profile_list,
         })
     }
 
-    pub fn get_profiles(&self) -> &Vec<VAProfile> {
-        &self.profile_list
+    pub fn get_profiles(&self) -> Box<Vec<VAProfile>> {
+        Box::new(va_query_config_profiles(self.disp, self.max_profiles))
     }
 
     pub fn get_entrypoints(&self, profile: VAProfile) -> Vec<VAEntrypoint> {
