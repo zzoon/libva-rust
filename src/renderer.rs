@@ -8,8 +8,9 @@ pub enum RendererBackend {
 
 pub trait VARenderer: Send + 'static {
     fn open(&mut self) -> Option<u8>;
-    fn render(&self, data: &[u8], len: usize) -> Option<u8>;
     fn close(&mut self) -> Option<u8>;
+    fn set_resolution(&mut self, width: u32, height: u32) -> Option<u8>;
+    fn render(&self, data: &[u8], len: usize) -> Option<u8>;
 }
 
 impl fmt::Debug for VARenderer {

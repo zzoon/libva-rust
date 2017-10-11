@@ -66,11 +66,17 @@ impl VARenderer for VARendererX11 {
             XInitThreads();
         }
 
-
         None
     }
 
     fn close(&mut self) -> Option<u8> {
+        None
+    }
+
+    fn set_resolution(&mut self, width: u32, height: u32) -> Option<u8> {
+        self.width = width;
+        self.height = height;
+
         None
     }
 
